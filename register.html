@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Register</title>
+    <link href="/img/favicon.png" rel="icon">
+    <link href="/img/apple-touch-icon.png" rel="apple-touch-icon">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i|Raleway:300,400,500,700,800|Montserrat:300,400,700" rel="stylesheet">
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/findLocation.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .form-outline input,
+        .form-outline textarea {
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-outline input:focus,
+        .form-outline textarea:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.2);
+        }
+
+        .btn {
+            border-radius: 0.5rem;
+            transition: 0.3s ease-in-out;
+            padding-left: 2.5rem;
+            padding-right: 2.5rem;
+            font-size: 1.1rem;
+            height: 50px;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            transform: scale(1.05);
+        }
+
+        .form-label {
+            font-weight: bold;
+        }
+
+        .container-fluid h-custom {
+            margin-top: 60px;
+        }
+
+        .form-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h2 {
+            font-size: 2.5rem;
+            color: #007bff;
+        }
+
+        .img-fluid {
+            border-radius: 8px;
+        }
+
+        .form-container .btn-register {
+            background-color: #007bff;
+            color: #fff;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        .form-container .btn-register:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .form-container .btn-reset {
+            background-color: #dc3545;
+            color: #fff;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        .form-container .btn-reset:hover {
+            background-color: #c82333;
+            transform: scale(1.05);
+        }
+
+        /* Error Message Styling */
+        #error-message {
+            color: red;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Register</h1>
+        <nav>
+            <a href="/index.html">Home</a>
+            <a href="/about.html">About</a>
+            <a href="/virtual-shoe-tryon.html">Virtual Shoe Try-On</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="vh-100">
+            <div class="container-fluid h-custom">
+                <div class="row d-flex justify-content-center align-items-center h-100">
+                    <div class="col-md-9 col-lg-6 col-xl-5">
+                        <img src="https://assets.poplar.studio/wp-content/uploads/2022/02/14125856/footwear-e1645198843554.jpg" class="img-fluid rounded" alt="Stylish Footwear">
+                    </div>
+                    <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+                        <div class="form-container">
+                            <form class="php-email-form" action="/register" method="POST">
+                                <div class="loading">Loading...</div>
+                                <div class="error-message"></div>
+                                <div class="sent-message">Your registration was successful!</div>
+                              
+                                <!-- Your form fields here -->
+                                <input type="text" name="name" placeholder="Enter your name" required>
+                                <input type="email" name="email" placeholder="Enter your email" required>
+                                <input type="password" name="password" placeholder="Enter your password" required>
+                                <button type="submit">Register</button>
+                              </form>
+                              
+
+                            <!-- Error message container -->
+                            <div id="error-message" style="display:none;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="copyright">
+                &copy; Copyright <strong>Bus Tracking System</strong>. All Rights Reserved
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('register-form').onsubmit = function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            // Reset error message visibility
+            const errorMessageElement = document.getElementById('error-message');
+            errorMessageElement.style.display = 'none';
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Send POST request to /register
+            fetch('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name, email, password }),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json(); // Parse JSON if the response is okay
+            })
+            .then(data => {
+                if (data.success) {
+                    alert('Registration successful! You can now log in.');
+                    window.location.href = '/login.html'; // Redirect to login
+                } else {
+                    // Show error message
+                    errorMessageElement.style.display = 'block';
+                    errorMessageElement.textContent = data.message || 'Registration failed. Please try again.';
+                }
+            })
+            .catch(error => {
+                // Show error message
+                errorMessageElement.style.display = 'block';
+                errorMessageElement.textContent = 'An error occurred: ' + error.message;
+            });
+        };
+    </script>
+</body>
+
+</html>
